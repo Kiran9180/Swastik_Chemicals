@@ -52,7 +52,7 @@ public class OrderItemController {
 
     @GetMapping("/all")
     public List<OrderItem> getAll() {
-
+System.out.println("inside conyroller"+orderItemDAO.getAll());
         return orderItemDAO.getAll();
     }
 
