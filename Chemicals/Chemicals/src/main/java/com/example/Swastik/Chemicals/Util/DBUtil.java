@@ -18,10 +18,11 @@ public class DBUtil {
 
     public static Connection getConnection() throws SQLException {
         try {
+            System.out.println("urlallinsidetry");
             // Write CA cert to a temp file
             Path caPath = Files.createTempFile("aiven-ca", ".pem");
             Files.writeString(caPath, CA_CERT);
-
+System.out.println("urlall"+caPath+CA_CERT);
             Properties props = new Properties();
             props.setProperty("user", USER);
             props.setProperty("password", PASS);
