@@ -17,6 +17,7 @@ public class DBUtil {
 
             // Read environment variables (Render)
             String url = System.getenv("DB_URL");
+            System.out.println("urlv"+url);
             String user = System.getenv("DB_USER");
             String pass = System.getenv("DB_PASS");
 
