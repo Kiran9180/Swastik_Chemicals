@@ -1,8 +1,8 @@
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
-COPY Chemicals/pom.xml .
-COPY Chemicals/src ./src
+COPY Chemicals/Chemicals/pom.xml .
+COPY Chemicals/Chemicals/src ./src
 
 RUN mvn clean package -DskipTests
 
