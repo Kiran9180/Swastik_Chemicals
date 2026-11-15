@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 
 public class DBUtil {
 
@@ -18,21 +19,22 @@ public class DBUtil {
 
     public static Connection getConnection() throws SQLException {
         try {
-            System.out.println("urlallinsidetry");
             // Write CA cert to a temp file
             Path caPath = Files.createTempFile("aiven-ca", ".pem");
-            Files.writeString(caPath, CA_CERT);
-System.out.println("urlall"+caPath+CA_CERT);
-            System.out.println("CA_CERT length = " + (CA_CERT != null ? CA_CERT.length() : 0));
+            Files.writeString(caPath, CA_CERT, StandardCharsets.UTF_8);
+
+            System.out.println("CA_CERT length = " + CA_CERT.length());
+            System.out.println("CA file path = " + caPath);
+
             Properties props = new Properties();
             props.setProperty("user", USER);
             props.setProperty("password", PASS);
+
+            // Required SSL settings
             props.setProperty("sslMode", "VERIFY_CA");
-            props.setProperty("useSSL", "true");
-            props.setProperty("requireSSL", "true");
-            props.setProperty("verifyServerCertificate", "true");
             props.setProperty("trustCertificateKeyStoreUrl", "file:" + caPath.toString());
-System.out.println("urlall"+URL+ ".."+props.toString());
+            props.setProperty("trustCertificateKeyStorePassword", "changeit"); // required dummy password
+
             return DriverManager.getConnection(URL, props);
 
         } catch (Exception e) {
