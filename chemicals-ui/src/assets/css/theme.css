@@ -1,0 +1,106 @@
+.form-control,
+.form-select {
+
+    border-radius: 8px;
+
+}
+
+.btn {
+
+    border-radius: 8px;
+
+}
+
+/* DESKTOP */
+
+.sidebar {
+
+    position: fixed;
+
+    top: 0;
+
+    left: 0;
+
+    width: 250px;
+
+    height: 100vh;
+
+    overflow-y: auto;
+
+    z-index: 1000;
+
+}
+
+.main-content {
+
+    margin-left: 250px;
+
+    padding: 20px;
+
+    min-height: 100vh;
+
+}
+
+/* TABLET */
+
+@media (max-width: 992px) {
+
+    .sidebar {
+
+        width: 220px;
+
+    }
+
+    .main-content {
+
+        margin-left: 220px;
+
+    }
+
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+    .sidebar {
+
+        position: relative;
+
+        width: 100%;
+
+        height: auto;
+
+    }
+
+    .main-content {
+
+        margin-left: 0;
+
+        width: 100%;
+
+        padding: 10px;
+
+    }
+
+}
+
+* {
+
+    box-sizing: border-box;
+
+}
+
+img {
+
+    max-width: 100%;
+
+    height: auto;
+
+}
+
+body {
+
+    overflow-x: hidden;
+
+}
