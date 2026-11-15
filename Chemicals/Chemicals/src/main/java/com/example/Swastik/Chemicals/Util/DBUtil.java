@@ -23,6 +23,7 @@ public class DBUtil {
             Path caPath = Files.createTempFile("aiven-ca", ".pem");
             Files.writeString(caPath, CA_CERT);
 System.out.println("urlall"+caPath+CA_CERT);
+            System.out.println("CA_CERT length = " + (CA_CERT != null ? CA_CERT.length() : 0));
             Properties props = new Properties();
             props.setProperty("user", USER);
             props.setProperty("password", PASS);
