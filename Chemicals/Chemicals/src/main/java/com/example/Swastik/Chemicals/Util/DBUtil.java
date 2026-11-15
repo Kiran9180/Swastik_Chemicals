@@ -6,33 +6,33 @@ import java.sql.SQLException;
 
 public class DBUtil {
 
-	
-	
-	
-	
-	private static Connection connection = null;
-	public static Connection getConnection() {
-		if (connection != null)
-			return connection;
-		else {
+    private static Connection connection = null;
 
-			try {
-				String driver="com.mysql.cj.jdbc.Driver";
-				String url="jdbc:mysql://localhost:3306/acid_order_management";
-				String user="root";
-				String password="NewPassword";
-				Class.forName(driver);
-				connection=DriverManager.getConnection(url,user,password);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} 
-			return connection;
-		}
+    public static Connection getConnection() {
+        if (connection != null)
+            return connection;
 
-	}
-	
-	
-	
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Read environment variables (Render)
+            String url = System.getenv("DB_URL");
+            String user = System.getenv("DB_USER");
+            String pass = System.getenv("DB_PASS");
+
+            // If environment variables are missing → use local DB
+            if (url == null || user == null || pass == null) {
+                url = "jdbc:mysql://localhost:3306/acid_order_management";
+                user = "root";
+                pass = "NewPassword";
+            }
+
+            connection = DriverManager.getConnection(url, user, pass);
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+
+        return connection;
+    }
 }
