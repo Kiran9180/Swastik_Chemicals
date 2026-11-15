@@ -3,37 +3,38 @@ package com.example.Swastik.Chemicals.Util;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class DBUtil {
 
-    private static Connection connection = null;
+    private static final String URL =
+        "jdbc:mysql://mysql-1f4745a1-kiranshinde4747-1d66.g.aivencloud.com:15881/defaultdb";
 
-    public static Connection getConnection() {
-        if (connection != null)
-            return connection;
+    private static final String USER = System.getenv("DB_USER");
+    private static final String PASS = System.getenv("DB_PASS");
+    private static final String CA_CERT = System.getenv("AIVEN_CA_CERT");
 
+    public static Connection getConnection() throws SQLException {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            // Write CA cert to a temp file
+            Path caPath = Files.createTempFile("aiven-ca", ".pem");
+            Files.writeString(caPath, CA_CERT);
 
-            // Read environment variables (Render)
-            String url = System.getenv("DB_URL");
-            System.out.println("urlv"+url);
-            String user = System.getenv("DB_USER");
-            String pass = System.getenv("DB_PASS");
+            Properties props = new Properties();
+            props.setProperty("user", USER);
+            props.setProperty("password", PASS);
+            props.setProperty("sslMode", "VERIFY_CA");
+            props.setProperty("useSSL", "true");
+            props.setProperty("requireSSL", "true");
+            props.setProperty("verifyServerCertificate", "true");
+            props.setProperty("trustCertificateKeyStoreUrl", "file:" + caPath.toString());
 
-            // If environment variables are missing → use local DB
-            if (url == null || user == null || pass == null) {
-                url = "jdbc:mysql://localhost:3306/acid_order_management";
-                user = "root";
-                pass = "NewPassword";
-            }
+            return DriverManager.getConnection(URL, props);
 
-            connection = DriverManager.getConnection(url, user, pass);
-
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new SQLException("Failed to connect to Aiven MySQL", e);
         }
-
-        return connection;
     }
 }
