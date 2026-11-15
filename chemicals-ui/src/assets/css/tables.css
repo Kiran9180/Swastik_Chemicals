@@ -1,0 +1,27 @@
+.erp-table {
+
+    margin-bottom: 0;
+
+}
+
+.erp-table thead {
+
+    background: #212529;
+
+    color: white;
+
+}
+
+.erp-table th {
+
+    font-size: 14px;
+
+    vertical-align: middle;
+
+}
+
+.erp-table td {
+
+    vertical-align: middle;
+
+}
