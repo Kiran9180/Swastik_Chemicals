@@ -30,7 +30,7 @@ public class DBUtil {
             props.setProperty("requireSSL", "true");
             props.setProperty("verifyServerCertificate", "true");
             props.setProperty("trustCertificateKeyStoreUrl", "file:" + caPath.toString());
-
+System.out.println("urlall"+URL+ ".."+props.toString());
             return DriverManager.getConnection(URL, props);
 
         } catch (Exception e) {
