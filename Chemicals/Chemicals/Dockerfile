@@ -6,9 +6,13 @@ COPY Chemicals/Chemicals/src ./src
 
 RUN mvn clean package -DskipTests
 
+# DEBUG: show what was built
+RUN ls -R /app/target
+
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
+# Copy ANY jar produced
 COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
