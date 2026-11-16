@@ -16,6 +16,8 @@ public class DBUtil {
 
     public static Connection getConnection() throws SQLException {
         try {
+			
+			
             System.out.println("DBUtil.getConnection() starting...");
             System.out.println("DB_URL=" + URL);
             System.out.println("DB_USERNAME=" + USER);
@@ -25,18 +27,18 @@ public class DBUtil {
             props.setProperty("user", USER);
             props.setProperty("password", PASS);
 
-            File pemFile = new File(PEM_PATH);
+        //    File pemFile = new File(PEM_PATH);
             System.out.println("PEM exists: " + pemFile.exists());
 
-            if (!pemFile.exists()) {
-                throw new SQLException("PEM file missing at " + PEM_PATH);
-            }
-
-            // Aiven SSL using PEM
-            props.setProperty("sslMode", "VERIFY_CA");
-            props.setProperty("trustCertificateKeyStoreUrl", "file:" + PEM_PATH);
-            props.setProperty("trustCertificateKeyStoreType", "PEM");
-
+        //    if (!pemFile.exists()) {
+        //        throw new SQLException("PEM file missing at " + PEM_PATH);
+        //    }
+		//
+        //    // Aiven SSL using PEM
+        //    props.setProperty("sslMode", "VERIFY_CA");
+        //    props.setProperty("trustCertificateKeyStoreUrl", "file:" + PEM_PATH);
+        //    props.setProperty("trustCertificateKeyStoreType", "PEM");
+		//
             return DriverManager.getConnection(URL, props);
 
         } catch (Exception e) {
