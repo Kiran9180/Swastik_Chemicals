@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_URL =
-    "http://localhost:8081/bill";
+    "https://swastik-chemicals.onrender.com/bill";
 
 export default {
 

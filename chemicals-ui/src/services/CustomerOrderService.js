@@ -1,10 +1,10 @@
 import axios from "axios";
 
 const API_URL =
-    "http://localhost:8081/customerOrder";
+    "https://swastik-chemicals.onrender.com/customerOrder";
 
 const USER_URL =
-    "http://localhost:8081/users";
+    "https://swastik-chemicals.onrender.com/users";
 
 export default {
 
