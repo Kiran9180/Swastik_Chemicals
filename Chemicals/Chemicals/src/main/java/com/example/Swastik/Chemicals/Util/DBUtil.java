@@ -4,9 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.charset.StandardCharsets;
 
 public class DBUtil {
 
@@ -15,25 +12,25 @@ public class DBUtil {
 
     private static final String USER = System.getenv("DB_USER");
     private static final String PASS = System.getenv("DB_PASS");
-    private static final String CA_CERT = System.getenv("AIVEN_CA_CERT");
+
+    // Render Secret Files mount here
+    private static final String TRUSTSTORE_PATH = "/etc/secrets/truststore.p12";
 
     public static Connection getConnection() throws SQLException {
         try {
-            // Write CA cert to a temp file
-            Path caPath = Files.createTempFile("aiven-ca", ".pem");
-            Files.writeString(caPath, CA_CERT, StandardCharsets.UTF_8);
-
-            System.out.println("CA_CERT length = " + CA_CERT.length());
-            System.out.println("CA file path = " + caPath);
-
             Properties props = new Properties();
             props.setProperty("user", USER);
             props.setProperty("password", PASS);
 
-            // Required SSL settings
+            // SSL settings for Aiven
             props.setProperty("sslMode", "VERIFY_CA");
-            props.setProperty("trustCertificateKeyStoreUrl", "file:" + caPath.toString());
-            props.setProperty("trustCertificateKeyStorePassword", "changeit"); // required dummy password
+            props.setProperty("trustCertificateKeyStoreUrl", "file:" + TRUSTSTORE_PATH);
+            props.setProperty("trustCertificateKeyStorePassword", "changeit"); // your p12 password
+            props.setProperty("trustCertificateKeyStoreType", "PKCS12");
+
+            // Debug
+            System.out.println("Truststore exists: " +
+                new java.io.File(TRUSTSTORE_PATH).exists());
 
             return DriverManager.getConnection(URL, props);
 
