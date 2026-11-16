@@ -18,10 +18,14 @@ public class DBUtil {
 
     public static Connection getConnection() throws SQLException {
         try {
+
+            System.out.println("inside try Truststore exists: " +
+                );
             Properties props = new Properties();
             props.setProperty("user", USER);
             props.setProperty("password", PASS);
-
+System.out.println("props: " +
+              props.toString() );
             // SSL settings for Aiven
             props.setProperty("sslMode", "VERIFY_CA");
             props.setProperty("trustCertificateKeyStoreUrl", "file:" + TRUSTSTORE_PATH);
