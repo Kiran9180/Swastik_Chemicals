@@ -19,8 +19,7 @@ public class DBUtil {
     public static Connection getConnection() throws SQLException {
         try {
 
-            System.out.println("inside try Truststore exists: " +
-                );
+            System.out.println("inside try Truststore exists: " );
             Properties props = new Properties();
             props.setProperty("user", USER);
             props.setProperty("password", PASS);
