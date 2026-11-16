@@ -28,7 +28,7 @@ public class DBUtil {
             props.setProperty("password", PASS);
 
         //    File pemFile = new File(PEM_PATH);
-            System.out.println("PEM exists: " + pemFile.exists());
+        //    System.out.println("PEM exists: " + pemFile.exists());
 
         //    if (!pemFile.exists()) {
         //        throw new SQLException("PEM file missing at " + PEM_PATH);
