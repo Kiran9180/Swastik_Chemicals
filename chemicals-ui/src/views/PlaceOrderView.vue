@@ -187,45 +187,45 @@ watch(
  }
 )
     
-    try {
+    // try {
 
-        const response =
-            await CustomerOrderService.checkCustomer(
-                customerOrder.value.mobile,
-                customerOrder.value.email
-            )
+    //     const response =
+    //         await CustomerOrderService.checkCustomer(
+    //             customerOrder.value.mobile,
+    //             customerOrder.value.email
+    //         )
 
-        if (response.data.exists) {
+    //     if (response.data.exists) {
 
-            existingCustomer.value = true
+    //         existingCustomer.value = true
 
-            existingUser.value =
-                response.data.user
+    //         existingUser.value =
+    //             response.data.user
 
-            showExistingCustomerModal.value =
-                true
+    //         showExistingCustomerModal.value =
+    //             true
 
-        } else {
+    //     } else {
 
-            existingCustomer.value = false
+    //         existingCustomer.value = false
 
-            existingUser.value = null
+    //         existingUser.value = null
 
-            customerOrder.value.userId =
-                null
+    //         customerOrder.value.userId =
+    //             null
 
-           // alert('New Customer')
-        }
+    //        // alert('New Customer')
+    //     }
 
-    } catch (error) {
+    // } catch (error) {
 
-        console.error(error)
+    //     console.error(error)
 
-        alert(
-            'Error Checking Customer'
-        )
-    }
-}
+    //     alert(
+    //         'Error Checking Customer'
+    //     )
+    // }
+
 
 function selectSameShop() {
 
