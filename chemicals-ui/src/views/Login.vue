@@ -18,45 +18,30 @@ const loginData = ref({
 
 function login() {
 
-    if(
-        !loginData.value.email
-        ||
+    if (
+        !loginData.value.email ||
         !loginData.value.passwordHash
     ) {
-
-        alert(
-            'Enter Email And Password'
-        )
-
+        alert('Enter Email And Password')
         return
-
     }
+
+    loading.value = true
 
     LoginService
         .login(loginData.value)
-
         .then(response => {
 
-            if(response.data) {
+            if (response.data) {
 
                 sessionStorage.setItem(
-
                     'user',
-
-                    JSON.stringify(
-                        response.data
-                    )
-
-                )
-
-                alert(
-                    'Login Successful'
+                    JSON.stringify(response.data)
                 )
 
                 router.push('/')
 
-            }
-            else {
+            } else {
 
                 alert(
                     'Invalid Email Or Password'
@@ -65,7 +50,6 @@ function login() {
             }
 
         })
-
         .catch(error => {
 
             console.log(error)
@@ -75,9 +59,12 @@ function login() {
             )
 
         })
+        .finally(() => {
 
+            loading.value = false
+
+        })
 }
-
 function placeOrder() {
 
     router.push(
@@ -147,13 +134,19 @@ function placeOrder() {
             <div
                 class="d-grid gap-2">
 
-                <button
-                    class="btn btn-primary"
-                    @click="login">
+               <button
+    class="btn btn-primary"
+    @click="login"
+    :disabled="loading">
 
-                    Login
+    <span
+        v-if="loading"
+        class="spinner-border spinner-border-sm me-2">
+    </span>
 
-                </button>
+    {{ loading ? 'Logging In...' : 'Login' }}
+
+</button>
 
                 <button
                     class="btn btn-success"
