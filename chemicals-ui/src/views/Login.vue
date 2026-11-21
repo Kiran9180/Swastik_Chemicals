@@ -17,7 +17,7 @@ const loginData = ref({
 })
 
 function login() {
-console.log("kkkkk);
+console.log("kkkkk");
     if (
         !loginData.value.email ||
         !loginData.value.passwordHash
