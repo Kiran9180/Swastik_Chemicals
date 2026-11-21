@@ -147,18 +147,13 @@ async function checkCustomer() {
   if (response.data.exists) {
 
    existingCustomer.value = true
-
-   existingUser.value =
-    response.data.user
-
+   existingUser.value = response.data.user
    showExistingCustomerModal.value = true
 
   } else {
 
    existingCustomer.value = false
-
    existingUser.value = null
-
    customerOrder.value.userId = null
 
   }
