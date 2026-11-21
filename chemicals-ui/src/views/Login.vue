@@ -89,7 +89,7 @@ function placeOrder() {
 
             <h4 class="mb-0">
 
-                Swastik Chemicals ERPpp
+                Swastik Chemicals ERPp
 
             </h4>
 
