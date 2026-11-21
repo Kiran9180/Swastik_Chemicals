@@ -23,7 +23,7 @@ public class ProductDAOImpl implements ProductDAO {
             Connection con = DBUtil.getConnection();
 
             String sql = """
-                    INSERT INTO Product
+                    INSERT INTO product
                     (
                         product_name,
                         final_cost,
@@ -62,7 +62,7 @@ public class ProductDAOImpl implements ProductDAO {
             Connection con = DBUtil.getConnection();
 
             String sql = """
-                    UPDATE Product
+                    UPDATE product
                     SET
                         product_name=?,
                         final_cost=?,
@@ -95,7 +95,7 @@ public class ProductDAOImpl implements ProductDAO {
             Connection con = DBUtil.getConnection();
 
             String sql =
-                    "DELETE FROM Product WHERE product_id=?";
+                    "DELETE FROM product WHERE product_id=?";
 
             PreparedStatement ps =
                     con.prepareStatement(sql);
@@ -121,7 +121,7 @@ public class ProductDAOImpl implements ProductDAO {
             Connection con = DBUtil.getConnection();
 
             String sql =
-                    "SELECT * FROM Product WHERE product_id=?";
+                    "SELECT * FROM product WHERE product_id=?";
 
             PreparedStatement ps =
                     con.prepareStatement(sql);
@@ -232,7 +232,7 @@ public class ProductDAOImpl implements ProductDAO {
 
             String sql = """
                     SELECT *
-                    FROM Product
+                    FROM product
                     WHERE active=1
                     ORDER BY product_name
                     """;
