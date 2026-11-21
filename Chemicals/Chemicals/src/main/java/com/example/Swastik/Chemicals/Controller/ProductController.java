@@ -77,8 +77,9 @@ public class ProductController {
 
     @GetMapping("/all")
     public List<Product> getAll() {
-
+ System.out.println("all products"+ " "+ productDAO.getAll().toString());
         return productDAO.getAll();
+       
     }
 
     @GetMapping("/active")
