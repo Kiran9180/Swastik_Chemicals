@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import ProductService from '../services/ProductService'
 import CustomerOrderService from '../services/CustomerOrderService'
 import OrderItemService from '../services/OrderItemService'
@@ -129,18 +129,69 @@ function resetForm() {
 
 async function checkCustomer() {
 
-    if (
-        !customerOrder.value.mobile &&
-        !customerOrder.value.email
-    ) {
+ if (
+  !customerOrder.value.mobile ||
+  !customerOrder.value.email
+ ) {
+  return
+ }
 
-        alert(
-            'Please Enter Mobile Or Email'
-        )
+ try {
 
-        return
-    }
+  const response =
+   await CustomerOrderService.checkCustomer(
+    customerOrder.value.mobile,
+    customerOrder.value.email
+   )
 
+  if (response.data.exists) {
+
+   existingCustomer.value = true
+
+   existingUser.value =
+    response.data.user
+
+   showExistingCustomerModal.value = true
+
+  } else {
+
+   existingCustomer.value = false
+
+   existingUser.value = null
+
+   customerOrder.value.userId = null
+
+  }
+
+ } catch (error) {
+
+  console.error(error)
+
+ }
+
+}
+
+
+watch(
+ () => [
+  customerOrder.value.mobile,
+  customerOrder.value.email
+ ],
+ async ([mobile, email]) => {
+
+  if (
+   !mobile ||
+   !email ||
+   mobile.trim() === '' ||
+   email.trim() === ''
+  ) {
+   return
+  }
+
+  await checkCustomer()
+ }
+)
+    
     try {
 
         const response =
@@ -168,7 +219,7 @@ async function checkCustomer() {
             customerOrder.value.userId =
                 null
 
-            alert('New Customer')
+           // alert('New Customer')
         }
 
     } catch (error) {
@@ -183,55 +234,69 @@ async function checkCustomer() {
 
 function selectSameShop() {
 
-    customerOrder.value.userId =
-        existingUser.value.id
+ customerOrder.value.userId =
+  existingUser.value.id
 
-    customerOrder.value.shopName =
-        existingUser.value.shopName
+ customerOrder.value.customerName =
+  existingUser.value.name
 
-    customerOrder.value.taluka =
-        existingUser.value.taluka
+ customerOrder.value.mobile =
+  existingUser.value.mobile
 
-    customerOrder.value.district =
-        existingUser.value.district
+ customerOrder.value.email =
+  existingUser.value.email
 
-    customerOrder.value.fullAddress =
-        existingUser.value.address
+ customerOrder.value.shopName =
+  existingUser.value.shopName
 
-    customerOrder.value.pincode =
-        existingUser.value.pincode
-customerLocked.value = true
-    showExistingCustomerModal.value =
-        false
+ customerOrder.value.gstNo =
+  existingUser.value.gstNo || ''
+
+ customerOrder.value.taluka =
+  existingUser.value.taluka
+
+ customerOrder.value.village =
+  existingUser.value.village
+
+ customerOrder.value.district =
+  existingUser.value.district
+
+ customerOrder.value.fullAddress =
+  existingUser.value.address
+
+ customerOrder.value.pincode =
+  existingUser.value.pincode
+
+ customerLocked.value = true
+
+ showExistingCustomerModal.value = false
 }
-
 function selectDifferentShop() {
 
-    customerOrder.value.userId =
-        existingUser.value.id
+ customerOrder.value.userId =
+  existingUser.value.id
 
-    customerOrder.value.customerName =
-        existingUser.value.name
+ customerOrder.value.customerName =
+  existingUser.value.name
 
-    customerOrder.value.mobile =
-        existingUser.value.mobile
+ customerOrder.value.mobile =
+  existingUser.value.mobile
 
-    customerOrder.value.email =
-        existingUser.value.email
+ customerOrder.value.email =
+  existingUser.value.email
 
-    customerOrder.value.shopName = ''
-    customerOrder.value.gstNo = ''
-    customerOrder.value.taluka = ''
-    customerOrder.value.village = ''
-    customerOrder.value.district = ''
-    customerOrder.value.fullAddress = ''
-    customerOrder.value.pincode = ''
+ customerOrder.value.shopName = ''
+ customerOrder.value.gstNo = ''
+ customerOrder.value.taluka = ''
+ customerOrder.value.village = ''
+ customerOrder.value.district = ''
+ customerOrder.value.fullAddress = ''
+ customerOrder.value.pincode = ''
 
-    customerLocked.value = true
+ customerLocked.value = false
 
-    showExistingCustomerModal.value = false
+ showExistingCustomerModal.value = false
 }
-
 function validateOrder() {
 
     if (
@@ -249,6 +314,14 @@ function validateOrder() {
         alert('Mobile Is Required')
         return false
     }
+
+
+    if (
+ !customerOrder.value.email.trim()
+) {
+ alert('Email Is Required')
+ return false
+}
 
     if (
         !customerOrder.value.shopName.trim()
@@ -436,10 +509,10 @@ onMounted(() => {
                             Customer Name *
                         </label>
 <input
-    type="text"
-    class="form-control"
-    v-model="customerOrder.customerName"
-    :disabled="customerLocked">
+ type="text"
+ class="form-control"
+ v-model="customerOrder.customerName"
+ :disabled="customerLocked">
 
                     </div>
 
@@ -450,10 +523,10 @@ onMounted(() => {
                         </label>
 
                        <input
-    type="text"
-    class="form-control"
-    v-model="customerOrder.mobile"
-    :disabled="customerLocked">
+ type="text"
+ class="form-control"
+ v-model="customerOrder.mobile"
+ :disabled="customerLocked">
 
                     </div>
 
@@ -463,34 +536,15 @@ onMounted(() => {
                             Email
                         </label>
 
-                        <input
-    type="email"
-    class="form-control"
-    v-model="customerOrder.email"
-    :disabled="customerLocked">
+                     <input
+ type="email"
+ class="form-control"
+ v-model="customerOrder.email"
+ :disabled="customerLocked">
 
                     </div>
 
-                    <div class="col-md-3 mb-3">
 
-                        <label class="form-label">
-                            &nbsp;
-                        </label>
-
-                        <div>
-
-                            <button
-    class="btn btn-info"
-    @click="checkCustomer"
-    :disabled="customerLocked">
-
-                                Check Existing Customer
-
-                            </button>
-
-                        </div>
-
-                    </div>
 
                 </div>
 
@@ -517,9 +571,10 @@ onMounted(() => {
                         </label>
 
                         <input
-                            type="text"
-                            class="form-control"
-                            v-model="customerOrder.shopName">
+ type="text"
+ class="form-control"
+ v-model="customerOrder.shopName"
+ :disabled="customerLocked">
 
                     </div>
 
@@ -529,10 +584,11 @@ onMounted(() => {
                             GST No
                         </label>
 
-                        <input
-                            type="text"
-                            class="form-control"
-                            v-model="customerOrder.gstNo">
+                       <input
+ type="text"
+ class="form-control"
+ v-model="customerOrder.gstNo"
+ :disabled="customerLocked">
 
                     </div>
 
@@ -542,10 +598,11 @@ onMounted(() => {
                             Pincode
                         </label>
 
-                        <input
-                            type="text"
-                            class="form-control"
-                            v-model="customerOrder.pincode">
+                       <input
+ type="text"
+ class="form-control"
+ v-model="customerOrder.pincode"
+ :disabled="customerLocked">
 
                     </div>
 
@@ -573,10 +630,11 @@ onMounted(() => {
                             Taluka *
                         </label>
 
-                        <input
-                            type="text"
-                            class="form-control"
-                            v-model="customerOrder.taluka">
+                      <input
+ type="text"
+ class="form-control"
+ v-model="customerOrder.taluka"
+ :disabled="customerLocked">
 
                     </div>
 
@@ -586,10 +644,11 @@ onMounted(() => {
                             Village *
                         </label>
 
-                        <input
-                            type="text"
-                            class="form-control"
-                            v-model="customerOrder.village">
+                     <input
+ type="text"
+ class="form-control"
+ v-model="customerOrder.village"
+ :disabled="customerLocked">
 
                     </div>
 
@@ -599,10 +658,11 @@ onMounted(() => {
                             District *
                         </label>
 
-                        <input
-                            type="text"
-                            class="form-control"
-                            v-model="customerOrder.district">
+                       <input
+ type="text"
+ class="form-control"
+ v-model="customerOrder.district"
+ :disabled="customerLocked">
 
                     </div>
 
@@ -612,10 +672,11 @@ onMounted(() => {
                             Full Address *
                         </label>
 
-                        <input
-                            type="text"
-                            class="form-control"
-                            v-model="customerOrder.fullAddress">
+                       <input
+ type="text"
+ class="form-control"
+ v-model="customerOrder.fullAddress"
+ :disabled="customerLocked">
 
                     </div>
 
