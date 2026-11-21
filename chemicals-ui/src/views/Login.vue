@@ -1,23 +1,22 @@
 <script setup>
-
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import LoginService
-from '../services/LoginService'
+import LoginService from '../services/LoginService'
 
 const router = useRouter()
 
+const loading = ref(false)
+
 const loginData = ref({
-
     email: '',
-
     passwordHash: ''
-
 })
 
 function login() {
-console.log("kkkkk");
+
+    console.log('Login clicked')
+
     if (
         !loginData.value.email ||
         !loginData.value.passwordHash
@@ -43,20 +42,16 @@ console.log("kkkkk");
 
             } else {
 
-                alert(
-                    'Invalid Email Or Password'
-                )
+                alert('Invalid Email Or Password')
 
             }
 
         })
         .catch(error => {
 
-            console.log(error)
+            console.error(error)
 
-            alert(
-                'Login Failed'
-            )
+            alert('Login Failed')
 
         })
         .finally(() => {
@@ -65,16 +60,13 @@ console.log("kkkkk");
 
         })
 }
+
 function placeOrder() {
 
-    router.push(
-        '/place-order'
-    )
+    router.push('/place-order')
 
 }
-
 </script>
-
 <template>
 
 <div
@@ -89,7 +81,7 @@ function placeOrder() {
 
             <h4 class="mb-0">
 
-                Swastik Chemicals ERPp
+                Swastik Chemicals ERP
 
             </h4>
 
@@ -137,15 +129,14 @@ function placeOrder() {
                <button
     class="btn btn-primary"
     @click="login"
-    :disabled="loading">
-
+    :disabled="loading"
+>
     <span
         v-if="loading"
-        class="spinner-border spinner-border-sm me-2">
-    </span>
+        class="spinner-border spinner-border-sm me-2"
+    ></span>
 
     {{ loading ? 'Logging In...' : 'Login' }}
-
 </button>
 
                 <button
