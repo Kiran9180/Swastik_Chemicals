@@ -176,7 +176,7 @@ public class ProductDAOImpl implements ProductDAO {
             Connection con = DBUtil.getConnection();
 
             String sql =
-                    "SELECT * FROM Product ORDER BY product_name";
+                    "SELECT * FROM product ORDER BY product_name";
 
             PreparedStatement ps =
                     con.prepareStatement(sql);
