@@ -2,6 +2,8 @@
 
 import { ref, computed, onMounted } from 'vue'
 import { Modal } from 'bootstrap'
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 
 import CustomerOrderService from '../services/CustomerOrderService'
@@ -10,6 +12,7 @@ import OrderItemService from '../services/OrderItemService'
 import OrderCostBreakupService from '../services/OrderCostBreakupService'
 import AdditionalCostService from '../services/AdditionalCostService'
 import BillService from '../services/BillService'
+import EmailService from '../services/EmailService'
 
 const approvedOrders = ref([])
 
@@ -230,21 +233,229 @@ function generateBill() {
 
 }
 
-function downloadBill(bill){
 
-    alert(
-        'PDF download will be implemented later'
-    )
 
+
+async function generatePdf(bill) {
+
+    const doc = new jsPDF();
+
+    const orderItemsResponse =
+        await OrderItemService.getByOrderId(
+            bill.orderId
+        );
+
+    const breakupResponse =
+        await OrderCostBreakupService.getByOrderId(
+            bill.orderId
+        );
+
+    const additionalResponse =
+        await AdditionalCostService.getByOrderId(
+            bill.orderId
+        );
+
+    const items = orderItemsResponse.data;
+    const breakups = breakupResponse.data;
+    const additional = additionalResponse.data;
+
+    doc.setFontSize(18);
+
+    doc.text(
+        "SWASTIK CHEMICALS",
+        14,
+        15
+    );
+
+    doc.setFontSize(10);
+
+    doc.text(
+        "Kupwad, Sangli, Maharashtra",
+        14,
+        22
+    );
+
+    doc.text(
+        "Phone: 9890638538",
+        14,
+        28
+    );
+
+    doc.text(
+        "Bill No : " + bill.billId,
+        140,
+        15
+    );
+
+    doc.text(
+        "Order No : " + bill.orderId,
+        140,
+        22
+    );
+
+    doc.text(
+        "Date : " + bill.billDate,
+        140,
+        29
+    );
+
+    autoTable(doc,{
+        startY:40,
+        head:[[
+            "Product",
+            "Qty",
+            "Rate",
+            "Amount"
+        ]],
+        body:items.map(item => {
+
+            const rate =
+                breakups
+                .filter(
+                    b =>
+                    b.orderItemId ==
+                    item.orderItemId
+                )
+                .reduce(
+                    (sum,b) =>
+                    sum +
+                    Number(b.amount),
+                    0
+                );
+
+            return [
+                getProductName(
+                    item.productId
+                ),
+                item.quantity,
+                rate,
+                rate *
+                item.quantity
+            ];
+
+        })
+    });
+
+    let y =
+        doc.lastAutoTable.finalY + 10;
+
+    doc.setFontSize(12);
+
+    doc.text(
+        "Product Total : ₹ " +
+        bill.productTotal,
+        14,
+        y
+    );
+
+    y += 8;
+
+    doc.text(
+        "Additional Total : ₹ " +
+        bill.additionalTotal,
+        14,
+        y
+    );
+
+    y += 8;
+
+    doc.setFontSize(14);
+
+    doc.text(
+        "Grand Total : ₹ " +
+        bill.grandTotal,
+        14,
+        y
+    );
+
+    if(additional.length > 0){
+
+        y += 20;
+
+        doc.setFontSize(12);
+
+        doc.text(
+            "Additional Costs",
+            14,
+            y
+        );
+
+        autoTable(doc,{
+            startY:y + 5,
+            head:[[
+                "Cost Name",
+                "Amount",
+                "Remarks"
+            ]],
+            body:additional.map(
+                cost => [
+                    cost.costName,
+                    cost.amount,
+                    cost.remarks
+                ]
+            )
+        });
+
+        y =
+            doc.lastAutoTable.finalY + 15;
+    }
+
+    doc.text(
+        "Authorized Signature",
+        140,
+        y
+    );
+
+    return doc;
 }
 
-function sendEmail(bill){
+
+
+
+async function downloadBill(bill) {
+
+    const doc =
+        await generatePdf(bill);
+
+    doc.save(
+        `Bill_${bill.billId}.pdf`
+    );
+}
+
+
+async function sendEmail(bill) {
+
+    const doc =
+        await generatePdf(bill);
+
+    const pdfBlob =
+        doc.output("blob");
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "file",
+        pdfBlob,
+        `Invoice_${bill.billId}.pdf`
+    );
+
+    await EmailService.sendEmail(
+        bill.billId,
+        formData
+    );
 
     alert(
-        'Email functionality will be implemented later'
-    )
-
+        "Email Sent Successfully"
+    );
 }
+
+
+
+
+
+
+
 
 onMounted(() => {
 

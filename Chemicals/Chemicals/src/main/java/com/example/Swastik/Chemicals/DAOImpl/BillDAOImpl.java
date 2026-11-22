@@ -102,6 +102,8 @@ public class BillDAOImpl implements BillDAO {
         Bill bill = null;
 
         try {
+        	
+        	System.out.println("i am here in bill dao imps");
 
             Connection con = DBUtil.getConnection();
 

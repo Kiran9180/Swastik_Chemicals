@@ -1,50 +1,82 @@
 package com.example.Swastik.Chemicals.Util;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.io.File;
 
 public class DBUtil {
 
-    private static final String URL = System.getenv("DB_URL");
-    private static final String USER = System.getenv("DB_USERNAME");
-    private static final String PASS = System.getenv("DB_PASSWORD");
+    private static String URL;
+    private static String USER;
+    private static String PASS;
 
-    private static final String PEM_PATH = "/etc/secrets/ca.pem";
+    static {
 
-    public static Connection getConnection() throws SQLException {
         try {
-			
-			
-            System.out.println("DBUtil.getConnection() starting...");
-            System.out.println("DB_URL=" + URL);
-            System.out.println("DB_USERNAME=" + USER);
-            System.out.println("DB_PASSWORD=" + (PASS != null ? "******" : null));
 
-            Properties props = new Properties();
-            props.setProperty("user", USER);
-            props.setProperty("password", PASS);
+            Properties properties = new Properties();
 
-        //    File pemFile = new File(PEM_PATH);
-        //    System.out.println("PEM exists: " + pemFile.exists());
+            InputStream inputStream =
+                    DBUtil.class
+                    .getClassLoader()
+                    .getResourceAsStream(
+                            "application.properties");
 
-        //    if (!pemFile.exists()) {
-        //        throw new SQLException("PEM file missing at " + PEM_PATH);
-        //    }
-		//
-        //    // Aiven SSL using PEM
-        //    props.setProperty("sslMode", "VERIFY_CA");
-        //    props.setProperty("trustCertificateKeyStoreUrl", "file:" + PEM_PATH);
-        //    props.setProperty("trustCertificateKeyStoreType", "PEM");
-		//
-            return DriverManager.getConnection(URL, props);
+            properties.load(inputStream);
 
-        } catch (Exception e) {
-            System.out.println("Exception in DBUtil.getConnection(): " + e.getMessage());
+            URL =
+                    properties.getProperty(
+                            "db.url");
+System.out.println("url.."+URL);
+            USER =
+                    properties.getProperty(
+                            "db.username");
+
+            PASS =
+                    properties.getProperty(
+                            "db.password");
+
+        }
+        catch(Exception e) {
+
             e.printStackTrace();
-            throw new SQLException("Failed to connect to Aiven MySQL", e);
+
         }
     }
+
+    public static Connection getConnection()
+            throws SQLException {
+
+        try {
+
+            Properties props =
+                    new Properties();
+
+            props.setProperty(
+                    "user",
+                    USER);
+
+            props.setProperty(
+                    "password",
+                    PASS);
+
+            return DriverManager.getConnection(
+                    URL,
+                    props);
+
+        }
+        catch(Exception e) {
+
+            e.printStackTrace();
+
+            throw new SQLException(
+                    "Database Connection Failed",
+                    e);
+
+        }
+
+    }
+
 }
