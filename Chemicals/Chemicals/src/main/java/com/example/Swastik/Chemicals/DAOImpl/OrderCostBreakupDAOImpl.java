@@ -50,7 +50,7 @@ public class OrderCostBreakupDAOImpl implements OrderCostBreakupDAO {
             Connection con = DBUtil.getConnection();
 
             String sql =
-                    "UPDATE order_cost_breakup SET cost_name=?, amount=? WHERE order_cost_breakup_id=?";
+                    "UPDATE order_cost_breakup SET cost_name=?, amount=? WHERE order_breakup_id=?";
 
             PreparedStatement ps =
                     con.prepareStatement(sql);
@@ -104,7 +104,7 @@ public class OrderCostBreakupDAOImpl implements OrderCostBreakupDAO {
             Connection con = DBUtil.getConnection();
 
             String sql =
-                    "SELECT * FROM order_cost_breakup WHERE order_cost_breakup_id=?";
+                    "SELECT * FROM order_cost_breakup WHERE order_breakup_id=?";
 
             PreparedStatement ps =
                     con.prepareStatement(sql);
@@ -118,7 +118,7 @@ public class OrderCostBreakupDAOImpl implements OrderCostBreakupDAO {
                 breakup = new OrderCostBreakup();
 
                 breakup.setOrderCostBreakupId(
-                        rs.getLong("order_cost_breakup_id"));
+                        rs.getLong("order_breakup_id"));
 
                 breakup.setOrderItemId(
                         rs.getLong("order_item_id"));
@@ -165,7 +165,7 @@ public class OrderCostBreakupDAOImpl implements OrderCostBreakupDAO {
                         new OrderCostBreakup();
 
                 breakup.setOrderCostBreakupId(
-                        rs.getLong("order_cost_breakup_id"));
+                        rs.getLong("order_breakup_id"));
 
                 breakup.setOrderItemId(
                         rs.getLong("order_item_id"));
@@ -218,7 +218,7 @@ public class OrderCostBreakupDAOImpl implements OrderCostBreakupDAO {
                         new OrderCostBreakup();
 
                 breakup.setOrderCostBreakupId(
-                        rs.getLong("order_cost_breakup_id"));
+                        rs.getLong("order_breakup_id"));
 
                 breakup.setOrderItemId(
                         rs.getLong("order_item_id"));
