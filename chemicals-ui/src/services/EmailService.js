@@ -1,4 +1,4 @@
-ailimport axios from "axios";
+import axios from "axios";
 
 const API_URL = "https://swastik-chemicals.onrender.com/email";
 
