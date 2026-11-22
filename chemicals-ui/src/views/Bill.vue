@@ -439,12 +439,12 @@ async function sendEmail(bill) {
         pdfBlob,
         `Invoice_${bill.billId}.pdf`
     );
-
+console.log("before emailsend");
     await EmailService.sendEmail(
         bill.billId,
         formData
     );
-
+console.log("after emailsend");
     alert(
         "Email Sent Successfully"
     );
